@@ -1,0 +1,106 @@
+
+</head>
+<body>
+	
+</body>
+</html>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Chat Room</title>
+	<script src="/socket.io/socket.io.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+	<style>
+		body{
+			margin-top:30px;
+		}
+	</style>
+
+	<script>
+		var socket = io();
+
+		var user;
+
+		function verifyName(){
+			socket.emit("verify", document.getElementById("name").value);
+		};
+
+		function sendChat(){
+			var chat = document.getElementById("chat")
+			if (chat.value){
+				socket.emit("chat", {chat: chat.value, name: user});
+				chat.value = " ";
+			}
+		}
+
+	 	socket.on("userExists",(data)=>{
+	 		document.getElementById("msg").innerHTML = data;
+	 	});
+
+	 	socket.on("userSet",(data)=>{
+	 		user = data;
+	 		document.getElementById("msg").innerHTML = "You are chatting as " + data;
+	 		document.getElementById("msg-block").innerHTML = '<input type="text" id="chat" placeholder="speak"> \
+	 									 <button type="button" name="button" onclick="sendChat()">Send</button>';
+	 	});
+
+	 	socket.on("newmsg",(data)=>{
+	 		console.log("newmsg reached");
+	 		if (user){
+	 			console.log("there is user");
+		 		var chatArea = document.getElementById("chat-block");
+		 		if (!chatArea) console.log("no chat area");
+		 		chatArea.innerHTML += '<li class="well well-sm list-group"><strong>' + data.name + '</strong>: ' + data.chat + '</li>';
+	 		}
+	 	});
+
+
+	</script>
+
+</head>
+<body>
+	<div class="container">
+		<p id="msg">Your name</p>
+		<div id="msg-block">
+			<input type="text" id="name" name="name" placeholder="dummy name to chat">
+			<button type="button" name="button" onclick="verifyName()">Let Me chat!</button>
+		</div>
+		<div><ul id="chat-block"> </ul></div>
+	</div>
+	<!-- <div class="container">
+		<div class="row">
+			<div class="col-md-4">
+				<div class="well">
+					<h3> Online  </h3>
+					<ul class="list-group" id="users"></ul>
+				</div>
+			</div>
+			<div class="col-md-8">
+				<div class="chat" id="chat"></div>
+
+				<form id="messageForm">
+					<div class="form-group">
+					<label>Message</label>
+					<textarea class="form-control" id="message"></textarea>
+					<br />
+					<input type="submit" class="btn btn-primary" value="send message" />
+					</div>
+				</form>
+			</div>	
+
+		</div>
+	</div>
+	<script src="/chat.js"></script>
+	<script>
+		$(()=>{
+			 var socket = io.connect();
+		});
+
+	</script> -->
+
+</body>
+</html>

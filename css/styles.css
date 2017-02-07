@@ -7,11 +7,13 @@ section{
 canvas{
     width:80%;
     display: block;
-    border: 1px solid purple;
+    border: 10px solid purple;						/*bigger borders do not throw the drawing out of balance*/
     margin: auto;
     background: #004d1a;
-    border: 15px solid #604020;
     border-radius: 5px;
+    cursor: url("../icon/Pencil.png") 31 31			/*This relative path doesnot work*/
+    	,url("Pencil.png") 31 31
+    	,crosshair;
 }
 
 

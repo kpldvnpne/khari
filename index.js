@@ -20,7 +20,16 @@ app.get("/stu",(req, res)=>{
 	res.sendFile(__dirname + "/views/student.html");
 });
 
-/////////////////////////////////////////////////////
+app.get("/chat",(req, res)=>{
+	res.sendFile(__dirname + "/views/chat.html");
+});
+
+//////////////// CHAT variables ///////////////////////
+var clients = 0;
+var users = [];
+
+
+//////////////////// CANVAS //////////////////////////////
 
 var line_history = [];
 
@@ -45,7 +54,30 @@ io.on('connection', function (socket) {
 		io.sockets.emit("clear");
 	});
 
+	/////////////// Chat ////////////////////////
+
+	socket.on("verify", (data)=>{
+		console.log("name to be verified");
+		if (users.indexOf(data) > -1){
+			// username already exists
+			socket.emit("userExists", data + " is already taken please choose another");
+		}else{
+			users.push(data);
+			socket.emit("userSet", data);
+		}
+	});
+
+	socket.on("chat",(data)=>{
+		console.log("chat is sent");
+		io.sockets.emit('newmsg', data);
+	});
+
+	/////////////// Chat end ////////////////////
+
+
 	socket.on("disconnect",()=>{
 		console.log("a user disconnected");
 	});
   });
+
+////////////////////////////////////////////////////////

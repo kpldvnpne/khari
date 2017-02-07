@@ -8,16 +8,16 @@ var mouse = {
 };
 // get canvas element and create context
 var canvas  = document.getElementById('canvas');
-var context = canvas.getContext('2d');
-context.lineWidth = 3;
-context.strokeStyle = "#ffffff";
-var width   = window.innerWidth;
+var context = canvas.getContext("2d");
+context.lineWidth = 10;
+context.strokeStyle="#FFFFFF";
+var width   = window.innerWidth;									
 var height  = window.innerHeight;
 var socket  = io.connect();
 
-// set canvas to full browser width/height
-canvas.width = width;
-canvas.height = height;
+// set canvas to 80% browser width/height because of the css
+canvas.width = 0.8 * width;
+//canvas.height = height;
 
 function changeColor(color){context.strokeStyle=color;}
 
@@ -31,22 +31,21 @@ socket.on("clear",()=>{
 
 // register mouse event handlers
 canvas.onmousedown = function(e){ mouse.click = true; };
-canvas.onmouseup = function(e){ mouse.click = false; };
+document.body.onmouseup = function(e){ mouse.click = false; };
 
 canvas.onmousemove = function(e) {
     // normalize mouse position to range 0.0 - 1.0
-    mouse.pos.x = e.clientX / width;
-    mouse.pos.y = e.clientY / height;
+    mouse.pos.x = (e.clientX - canvas.offsetLeft) / canvas.width;	//offsetLeft to mark the cursor position respective to canvas not the viewport			
+    mouse.pos.y = (e.clientY - canvas.offsetTop) / canvas.height;
     mouse.move = true;
 };
-
 // draw line received from server
 socket.on('draw_line', function (data) {
     var line = data.line;
     context.strokeStyle = data.color;
     context.beginPath();
-    context.moveTo(line[0].x * width, line[0].y * height);
-    context.lineTo(line[1].x * width, line[1].y * height);
+    context.moveTo(line[0].x * canvas.width, line[0].y * canvas.height);
+    context.lineTo(line[1].x * canvas.width, line[1].y * canvas.height);
     context.stroke();
 });
 
@@ -59,6 +58,6 @@ function mainLoop() {
         mouse.move = false;
     }
     mouse.pos_prev = {x: mouse.pos.x, y: mouse.pos.y};
-    setTimeout(mainLoop, 25);
+	setTimeout(mainLoop, 25);
 }
 mainLoop();
