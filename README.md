@@ -14,4 +14,6 @@ you must have node js with npm installed
         open several pages with student and teacher's url and experiment :)
         
         
- ---Bipin Oli
+### Authors
+- Bipin Oli bipinoli90@gmail.com
+- Kapildev Neupane kapildevneupane55@gmail.com
